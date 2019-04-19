@@ -2,3 +2,4 @@ node_modules
 Posto Fácil.pdm
 pdm.json
 *.sql
+.idea
