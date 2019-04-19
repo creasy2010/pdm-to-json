@@ -2,6 +2,8 @@ const removeDiacritics = require('./removeDiacritics');
 const util = require('util');
 const parser = require('xml2js');
 const fs = require('fs');
+import * as fse from "fs-extra";
+
 const writeFile = util.promisify(fs.writeFile);
 const readFile = util.promisify(fs.readFile);
 const parseString = util.promisify(parser.parseString);
@@ -9,7 +11,7 @@ const rtfToHTMLLib = util.promisify(require('@iarna/rtf-to-html').fromString);
 
 import {join} from "path";
 
-module.exports = function (fileName=join(__dirname,'../S2B.pdm')) {
+ export function parse(fileName=join(__dirname,'../S2B.pdm')) {
 
     return readFile(fileName, 'utf8')
         .then(parseString)
@@ -17,7 +19,11 @@ module.exports = function (fileName=join(__dirname,'../S2B.pdm')) {
         .catch(console.log);
 }
 
+
+
 async function getPdmInfo(parsedJson) {
+  fse.writeJSONSync(join(__dirname,'out.json'),parsedJson);
+  console.log(JSON.stringify(parsedJson));
     const model = parsedJson['Model']['o:RootObject'][0]['c:Children'][0]['o:Model'][0];
     const tables = model['c:Tables'][0]['o:Table'];
     const parsedModel = {};
@@ -164,7 +170,7 @@ function codify(str) {
 function extractListOfValues(str) {
     return str.split('\r\n').map(s => {
         const elements = s.split('\t');
-        const obj = {};
+        const obj:any = {};
         obj.code = elements[0];
         obj.name = elements[1];
         obj.constantName = removeDiacritics(elements[1])
@@ -194,3 +200,6 @@ function findTableByRef(parsedModel, ref) {
         }
     }
 }
+
+
+parse();
