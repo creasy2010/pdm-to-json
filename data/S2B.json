@@ -9,8 +9,10 @@
             "$": {
                 "Id": "o1"
             },
-            "c:Children": [{
-                "o:Model": [{
+            "c:Children": [
+              {
+                "o:Model": [
+                  {
                     "$": {
                         "Id": "o2"
                     },
@@ -57,7 +59,8 @@
                             "a:PaperSize": ["(8268, 11693)"],
                             "a:PageMargins": ["((315,354), (433,354))"],
                             "a:PaperSource": ["7"],
-                            "c:Symbols": [{
+                            "c:Symbols": [
+                              {
                                 "o:TableSymbol": [{
                                     "$": {
                                         "Id": "o5"
@@ -251,7 +254,9 @@
                                     }]
                                 }]
                             }]
-                        }, {
+                        },
+
+                          {
                             "$": {
                                 "Id": "o23"
                             },
@@ -267,7 +272,9 @@
                             "a:PageMargins": ["((315,354), (433,354))"],
                             "a:PageOrientation": ["1"],
                             "a:PaperSource": ["7"],
-                            "c:Symbols": [{
+                            "c:Symbols": [
+
+                              {
                                 "o:ExtendedDependencySymbol": [{
                                     "$": {
                                         "Id": "o24"
@@ -5651,8 +5658,11 @@
                             "a:Modifier": ["bail"]
                         }]
                     }],
-                    "c:Tables": [{
-                        "o:Table": [{
+                    "c:Tables": [
+                      {
+                        "o:Table": [
+
+                          {
                             "$": {
                                 "Id": "o6"
                             },
@@ -5665,8 +5675,11 @@
                             "a:Modifier": ["bail"],
                             "a:Comment": ["商品的客户收藏"],
                             "a:TotalSavingCurrency": [""],
-                            "c:Columns": [{
-                                "o:Column": [{
+                            "c:Columns": [
+
+                              {
+                                "o:Column": [
+                                  {
                                     "$": {
                                         "Id": "o412"
                                     },
@@ -5681,7 +5694,8 @@
                                     "a:Length": ["20"],
                                     "a:Identity": ["1"],
                                     "a:Column.Mandatory": ["1"]
-                                }, {
+                                },
+                                  {
                                     "$": {
                                         "Id": "o413"
                                     },
@@ -5802,8 +5816,10 @@
                                     "a:DataType": ["datetime"]
                                 }]
                             }],
-                            "c:Keys": [{
-                                "o:Key": [{
+                            "c:Keys": [
+                              {
+                                "o:Key": [
+                                  {
                                     "$": {
                                         "Id": "o421"
                                     },
@@ -5847,7 +5863,8 @@
                                     }]
                                 }]
                             }],
-                            "c:Owner": [{
+                            "c:Owner": [
+                              {
                                 "o:User": [{
                                     "$": {
                                         "Ref": "o411"
@@ -5861,7 +5878,11 @@
                                     }
                                 }]
                             }]
-                        }, {
+                        }
+
+                        ,
+
+                          {
                             "$": {
                                 "Id": "o8"
                             },
@@ -29868,7 +29889,8 @@
                                 }]
                             }]
                         }]
-                    }],
+                    }
+                    ],
                     "c:References": [{
                         "o:Reference": [{
                             "$": {
