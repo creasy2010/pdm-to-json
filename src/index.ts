@@ -20,12 +20,12 @@ import {join} from "path";
 }
 
 
-
 async function getPdmInfo(parsedJson) {
   fse.writeJSONSync(join(__dirname,'out.json'),parsedJson);
   console.log(JSON.stringify(parsedJson));
-    const model = parsedJson['Model']['o:RootObject'][0]['c:Children'][0]['o:Model'][0];
+    const model:PDB.IOModel = parsedJson['Model']['o:RootObject'][0]['c:Children'][0]['o:Model'][0];
     const tables = model['c:Tables'][0]['o:Table'];
+
     const parsedModel = {};
 
     for (const table of tables) {

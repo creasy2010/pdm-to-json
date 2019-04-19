@@ -7,7 +7,7 @@
  * @Date    2019/4/19
  **/
 
-declare module namespace {
+declare module PDB {
 
 
 
@@ -15,9 +15,7 @@ declare module namespace {
     Id: string;
   }
 
-
-
-  export interface OModel{
+  export interface IOModel{
     $:Key,
     "a:ObjectID": string[];
     "a:Name": string[];
@@ -33,7 +31,6 @@ declare module namespace {
     "c:Tables":{
       "o:Table":OTable[];
     };
-    //TODO
     "c:PhysicalDiagrams":{"o:PhysicalDiagram":OPhysicalDiagram[]}[];
     "c:DefaultDiagram":{
       "o:PhysicalDiagram":KeyRef[],
@@ -42,11 +39,113 @@ declare module namespace {
       "o:User":OUser[]
     }[];
     "c:References":{
-      "o:Reference":[]
+      "o:Reference":OReference[]
     }[];
-    "c:DefaultGroups":null;
-    "c:ChildTraceabilityLinks":null;
-    "c:TargetModels":null;
+    "c:DefaultGroups":{
+      "o:Group":OGroup[],
+    }[];
+    "c:ChildTraceabilityLinks":{
+      "o:ExtendedDependency":OExtendedDependency[]
+    }[];
+    "c:TargetModels":{
+      "o:TargetModel":OTargetModel[]
+    }[];
+  }
+
+
+
+  export interface OTargetModel {
+    $: Key;
+    "a:ObjectID": string[];
+    "a:Name": string[];
+    "a:Code": string[];
+    "a:CreationDate": string[];
+    "a:Creator": string[];
+    "a:ModificationDate": string[];
+    "a:Modifier": string[];
+    "a:TargetModelURL": string[];
+    "a:TargetModelID": string[];
+    "a:TargetModelClassID": string[];
+    "a:TargetModelLastModificationDate": string[];
+    "c:SessionShortcuts": {
+      "o:Shortcut":KeyRef[]
+    }[];
+  }
+
+
+
+  export interface OExtendedDependency {
+    $: Key;
+    "a:ObjectID": string[];
+    "a:CreationDate": string[];
+    "a:Creator": string[];
+    "a:ModificationDate": string[];
+    "a:Modifier": string[];
+    "c:Object1": {
+      "o:Table":KeyRef[]
+    }[];
+    "c:Object2": {
+      "o:Table":KeyRef[]
+    }[];
+  }
+
+  export interface OGroup {
+    $: Key;
+    "a:ObjectID": string[];
+    "a:Name": string[];
+    "a:Code": string[];
+    "a:CreationDate": string[];
+    "a:Creator": string[];
+    "a:ModificationDate": string[];
+    "a:Modifier": string[];
+    "c:Group.Users": {
+      "o:User":KeyRef[]
+    }[];
+  }
+
+
+
+
+  export interface OColumnRef {
+    "o:Column": KeyRef[];
+  }
+
+  export interface OReferenceJoin {
+    $: Key;
+    "a:ObjectID": string[];
+    "a:CreationDate": string[];
+    "a:Creator": string[];
+    "a:ModificationDate": string[];
+    "a:Modifier": string[];
+    "c:Object1": OColumnRef[];
+    "c:Object2": OColumnRef[];
+  }
+  //
+  // export interface CJoin {
+  //   o:ReferenceJoin: OReferenceJoin[];
+  // }
+
+  export interface OReference {
+    $: Key;
+    "a:ObjectID": string[];
+    "a:Name": string[];
+    "a:Code": string[];
+    "a:CreationDate": string[];
+    "a:Creator": string[];
+    "a:ModificationDate": string[];
+    "a:Modifier": string[];
+    "a:ForeignKeyConstraintName": string[];
+    "a:Cardinality": string[];
+    "c:ParentTable": {
+      "o:Table":KeyRef[]
+    }[];
+    "c:ChildTable": {
+      "o:Table":KeyRef[]
+    }[];
+    "c:ParentKey": {
+      "a:key":KeyRef[]
+    }[];
+    "c:Joins": OReferenceJoin[];
   }
 
 
