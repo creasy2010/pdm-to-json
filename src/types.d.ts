@@ -9,7 +9,21 @@
 
 declare module PDB {
 
+  export interface IModel{
+    $:{
+      //终于明白aco的含义了
+      xmlnsa:"attribute",
+      xmlnsc:"collection",
+      xmlnso:"object",
+    };
+    oRootObject:{
+      $:KeyRef;
+      cChildren:{
+        oModel:IOModel[]
+      }[];
+    }[]
 
+  }
 
   export interface Key {
     Id: string;
@@ -17,38 +31,38 @@ declare module PDB {
 
   export interface IOModel{
     $:Key,
-    "a:ObjectID": string[];
-    "a:Name": string[];
-    "a:Code": string[];
-    "a:CreationDate":string[];
-    "a:Creator":string[];
-    "a:ModificationDate":string[];
-    "a:Modifier": string[];
-    "a:PackageOptionsText":string[];
-    "a:ModelOptionsText":string[];
-    "a:ExtendedAttributesText":string[];
-    "c:DBMS":OShortcut[];
-    "c:Tables":{
-      "o:Table":OTable[];
+    "aObjectID": string[];
+    "aName": string[];
+    "aCode": string[];
+    "aCreationDate":string[];
+    "aCreator":string[];
+    "aModificationDate":string[];
+    "aModifier": string[];
+    "aPackageOptionsText":string[];
+    "aModelOptionsText":string[];
+    "aExtendedAttributesText":string[];
+    "cDBMS":OShortcut[];
+    "cTables":{
+      "oTable":OTable[];
+    }[];
+    "cPhysicalDiagrams":{"oPhysicalDiagram":OPhysicalDiagram[]}[];
+    "cDefaultDiagram":{
+      "oPhysicalDiagram":KeyRef[],
     };
-    "c:PhysicalDiagrams":{"o:PhysicalDiagram":OPhysicalDiagram[]}[];
-    "c:DefaultDiagram":{
-      "o:PhysicalDiagram":KeyRef[],
-    };
-    "c:Users":{
-      "o:User":OUser[]
+    "cUsers":{
+      "oUser":OUser[]
     }[];
-    "c:References":{
-      "o:Reference":OReference[]
+    "cReferences":{
+      "oReference":OReference[]
     }[];
-    "c:DefaultGroups":{
-      "o:Group":OGroup[],
+    "cDefaultGroups":{
+      "oGroup":OGroup[],
     }[];
-    "c:ChildTraceabilityLinks":{
-      "o:ExtendedDependency":OExtendedDependency[]
+    "cChildTraceabilityLinks":{
+      "oExtendedDependency":OExtendedDependency[]
     }[];
-    "c:TargetModels":{
-      "o:TargetModel":OTargetModel[]
+    "cTargetModels":{
+      "oTargetModel":OTargetModel[]
     }[];
   }
 
@@ -56,19 +70,19 @@ declare module PDB {
 
   export interface OTargetModel {
     $: Key;
-    "a:ObjectID": string[];
-    "a:Name": string[];
-    "a:Code": string[];
-    "a:CreationDate": string[];
-    "a:Creator": string[];
-    "a:ModificationDate": string[];
-    "a:Modifier": string[];
-    "a:TargetModelURL": string[];
-    "a:TargetModelID": string[];
-    "a:TargetModelClassID": string[];
-    "a:TargetModelLastModificationDate": string[];
-    "c:SessionShortcuts": {
-      "o:Shortcut":KeyRef[]
+    "aObjectID": string[];
+    "aName": string[];
+    "aCode": string[];
+    "aCreationDate": string[];
+    "aCreator": string[];
+    "aModificationDate": string[];
+    "aModifier": string[];
+    "aTargetModelURL": string[];
+    "aTargetModelID": string[];
+    "aTargetModelClassID": string[];
+    "aTargetModelLastModificationDate": string[];
+    "cSessionShortcuts": {
+      "oShortcut":KeyRef[]
     }[];
   }
 
@@ -76,30 +90,30 @@ declare module PDB {
 
   export interface OExtendedDependency {
     $: Key;
-    "a:ObjectID": string[];
-    "a:CreationDate": string[];
-    "a:Creator": string[];
-    "a:ModificationDate": string[];
-    "a:Modifier": string[];
-    "c:Object1": {
-      "o:Table":KeyRef[]
+    "aObjectID": string[];
+    "aCreationDate": string[];
+    "aCreator": string[];
+    "aModificationDate": string[];
+    "aModifier": string[];
+    "cObject1": {
+      "oTable":KeyRef[]
     }[];
-    "c:Object2": {
-      "o:Table":KeyRef[]
+    "cObject2": {
+      "oTable":KeyRef[]
     }[];
   }
 
   export interface OGroup {
     $: Key;
-    "a:ObjectID": string[];
-    "a:Name": string[];
-    "a:Code": string[];
-    "a:CreationDate": string[];
-    "a:Creator": string[];
-    "a:ModificationDate": string[];
-    "a:Modifier": string[];
-    "c:Group.Users": {
-      "o:User":KeyRef[]
+    "aObjectID": string[];
+    "aName": string[];
+    "aCode": string[];
+    "aCreationDate": string[];
+    "aCreator": string[];
+    "aModificationDate": string[];
+    "aModifier": string[];
+    "cGroup.Users": {
+      "oUser":KeyRef[]
     }[];
   }
 
@@ -107,18 +121,18 @@ declare module PDB {
 
 
   export interface OColumnRef {
-    "o:Column": KeyRef[];
+    "oColumn": KeyRef[];
   }
 
   export interface OReferenceJoin {
     $: Key;
-    "a:ObjectID": string[];
-    "a:CreationDate": string[];
-    "a:Creator": string[];
-    "a:ModificationDate": string[];
-    "a:Modifier": string[];
-    "c:Object1": OColumnRef[];
-    "c:Object2": OColumnRef[];
+    "aObjectID": string[];
+    "aCreationDate": string[];
+    "aCreator": string[];
+    "aModificationDate": string[];
+    "aModifier": string[];
+    "cObject1": OColumnRef[];
+    "cObject2": OColumnRef[];
   }
   //
   // export interface CJoin {
@@ -127,71 +141,71 @@ declare module PDB {
 
   export interface OReference {
     $: Key;
-    "a:ObjectID": string[];
-    "a:Name": string[];
-    "a:Code": string[];
-    "a:CreationDate": string[];
-    "a:Creator": string[];
-    "a:ModificationDate": string[];
-    "a:Modifier": string[];
-    "a:ForeignKeyConstraintName": string[];
-    "a:Cardinality": string[];
-    "c:ParentTable": {
-      "o:Table":KeyRef[]
+    "aObjectID": string[];
+    "aName": string[];
+    "aCode": string[];
+    "aCreationDate": string[];
+    "aCreator": string[];
+    "aModificationDate": string[];
+    "aModifier": string[];
+    "aForeignKeyConstraintName": string[];
+    "aCardinality": string[];
+    "cParentTable": {
+      "oTable":KeyRef[]
     }[];
-    "c:ChildTable": {
-      "o:Table":KeyRef[]
+    "cChildTable": {
+      "oTable":KeyRef[]
     }[];
-    "c:ParentKey": {
-      "a:key":KeyRef[]
+    "cParentKey": {
+      "akey":KeyRef[]
     }[];
-    "c:Joins": OReferenceJoin[];
+    "cJoins": OReferenceJoin[];
   }
 
 
   export interface OUser {
     $: Key;
-    "a:ObjectID": string[];
-    "a:Name": string[];
-    "a:Code": string[];
-    "a:CreationDate": string[];
-    "a:Creator": string[];
-    "a:ModificationDate": string[];
-    "a:Modifier": string[];
+    "aObjectID": string[];
+    "aName": string[];
+    "aCode": string[];
+    "aCreationDate": string[];
+    "aCreator": string[];
+    "aModificationDate": string[];
+    "aModifier": string[];
   }
 
 
   export interface OTableSymbol {
     $: Key;
-    "a:ModificationDate": string[];
-    "a:IconMode": string[];
-    "a:Rect": string[];
-    "a:LineColor": string[];
-    "a:FillColor": string[];
-    "a:ShadowColor": string[];
-    "a:FontList": string[];
-    "a:BrushStyle": string[];
-    "a:GradientFillMode": string[];
-    "a:GradientEndColor": string[];
-    "c:Object": {"o:Table":{$:KeyRef}}[];
-    "a:CreationDate": string[];
+    "aModificationDate": string[];
+    "aIconMode": string[];
+    "aRect": string[];
+    "aLineColor": string[];
+    "aFillColor": string[];
+    "aShadowColor": string[];
+    "aFontList": string[];
+    "aBrushStyle": string[];
+    "aGradientFillMode": string[];
+    "aGradientEndColor": string[];
+    "cObject": {"oTable":{$:KeyRef}}[];
+    "aCreationDate": string[];
   }
 
   export interface OPhysicalDiagram {
     $: Key;
-    "a:ObjectID": string[];
-    "a:Name": string[];
-    "a:Code": string[];
-    "a:CreationDate": string[];
-    "a:Creator": string[];
-    "a:ModificationDate": string[];
-    "a:Modifier": string[];
-    "a:DisplayPreferences": string[];
-    "a:PaperSize": string[];
-    "a:PageMargins": string[];
-    "a:PaperSource": string[];
-    "c:Symbols": {
-      "o:TableSymbol": OTableSymbol[];
+    "aObjectID": string[];
+    "aName": string[];
+    "aCode": string[];
+    "aCreationDate": string[];
+    "aCreator": string[];
+    "aModificationDate": string[];
+    "aModifier": string[];
+    "aDisplayPreferences": string[];
+    "aPaperSize": string[];
+    "aPageMargins": string[];
+    "aPaperSource": string[];
+    "cSymbols": {
+      "oTableSymbol": OTableSymbol[];
     }[];
   }
 
@@ -199,57 +213,58 @@ declare module PDB {
 
   export interface OShortcut {
     $: Key;
-    "a:ObjectID": string[];
-    "a:Name": string[];
-    "a:Code": string[];
-    "a:CreationDate": string[];
-    "a:Creator": string[];
-    "a:ModificationDate": string[];
-    "a:Modifier": string[];
-    "a:TargetStereotype": string[];
-    "a:TargetID": string[];
-    "a:TargetClassID": string[];
+    "aObjectID": string[];
+    "aName": string[];
+    "aCode": string[];
+    "aCreationDate": string[];
+    "aCreator": string[];
+    "aModificationDate": string[];
+    "aModifier": string[];
+    "aTargetStereotype": string[];
+    "aTargetID": string[];
+    "aTargetClassID": string[];
   }
 
 
 
   export interface OTable {
     $: Key;
-    "a:ObjectID": string[];
-    "a:Name": string[];
-    "a:Code": string[];
-    "a:CreationDate": string[];
-    "a:Creator": string[];
-    "a:ModificationDate": string[];
-    "a:Modifier": string[];
-    "a:Comment": string[];
-    "a:TotalSavingCurrency": string[];
-    "c:Columns": CColumn[];
-    "c:Keys": CKey[];
-    "c:Owner": COwner[];
-    "c:PrimaryKey": CPrimaryKey[];
+    "aObjectID": string[];
+    "aName": string[];
+    "aCode": string[];
+    "aCreationDate": string[];
+    "aCreator": string[];
+    "aModificationDate": string[];
+    "aModifier": string[];
+    "aComment": string[];
+    "aDescription": string[];
+    "aTotalSavingCurrency": string[];
+    "cColumns": CColumn[];
+    "cKeys": CKey[];
+    "cOwner": COwner[];
+    "cPrimaryKey": CPrimaryKey[];
   }
 
 
   export interface OColumn {
     $: Key;
-    "a:ObjectID": string[];
-    "a:Name": string[];
-    "a:Code": string[];
-    "a:CreationDate": string[];
-    "a:Creator": string[];
-    "a:ModificationDate": string[];
-    "a:Modifier": string[];
-    "a:DataType": string[];
-    "a:Length": string[];
-    "a:Identity": string[];
-    "a:Column.Mandatory": string[];
-    "a:Comment": string[];
-    "a:ExtendedAttributesText": string[];
+    "aObjectID": string[];
+    "aName": string[];
+    "aCode": string[];
+    "aCreationDate": string[];
+    "aCreator": string[];
+    "aModificationDate": string[];
+    "aModifier": string[];
+    "aDataType": string[];
+    "aLength": string[];
+    "aIdentity": string[];
+    "aColumn.Mandatory": string[];
+    "aComment": string[];
+    "aExtendedAttributesText": string[];
   }
 
   export interface CColumn {
-    "o:Column": OColumn[];
+    "oColumn": OColumn[];
   }
 
   export interface KeyRef {
@@ -259,28 +274,28 @@ declare module PDB {
   }
 
   export interface CKeyColumn {
-    "o:Column": KeyRef[];
+    "oColumn": KeyRef[];
   }
 
   export interface OKey {
     $: Key;
-    "a:ObjectID": string[];
-    "a:Name": string[];
-    "a:Code": string[];
-    "a:CreationDate": string[];
-    "a:Creator": string[];
-    "a:ModificationDate": string[];
-    "a:Modifier": string[];
-    "a:ConstraintName": string[];
-    "c:Key.Columns": CKeyColumn[];
+    "aObjectID": string[];
+    "aName": string[];
+    "aCode": string[];
+    "aCreationDate": string[];
+    "aCreator": string[];
+    "aModificationDate": string[];
+    "aModifier": string[];
+    "aConstraintName": string[];
+    "cKey.Columns": CKeyColumn[];
   }
 
   export interface CKey {
-    "o:Key": OKey[];
+    "oKey": OKey[];
   }
 
   export interface COwner {
-    "o:User": {
+    "oUser": {
       $ : KeyRef;
     }[];
   }
@@ -290,7 +305,7 @@ declare module PDB {
   }
 
   export interface CPrimaryKey {
-    "o:Key": OKey2[];
+    "oKey": OKey2[];
   }
 }
 

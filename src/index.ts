@@ -3,41 +3,39 @@ const util = require('util');
 const parser = require('xml2js');
 const fs = require('fs');
 import * as fse from "fs-extra";
-
-const writeFile = util.promisify(fs.writeFile);
-const readFile = util.promisify(fs.readFile);
 const parseString = util.promisify(parser.parseString);
 const rtfToHTMLLib = util.promisify(require('@iarna/rtf-to-html').fromString);
 
 import {join} from "path";
 
- export function parse(fileName=join(__dirname,'../S2B.pdm')) {
+export async function parse(fileName=join(__dirname,'../S2B.pdm')) {
 
-    return readFile(fileName, 'utf8')
-        .then(parseString)
-        .then(getPdmInfo)
-        .catch(console.log);
+  let content  = await fse.readFile(fileName, 'utf8');
+  //Tip: 把json中 a:XXX c:XXX o:XXX转换为 aXXX cXXX oXXX ts类型提示添加上来.
+  let PdbJson:{Model:PDB.IModel} = await parseString(content.replace(/"([aco(xmlns)]):/ig,'"$1'));
+  let results  =  await getPdmInfo(PdbJson);
+  console.log(results);
 }
 
 
-async function getPdmInfo(parsedJson) {
-  fse.writeJSONSync(join(__dirname,'out.json'),parsedJson);
-  console.log(JSON.stringify(parsedJson));
-    const model:PDB.IOModel = parsedJson['Model']['o:RootObject'][0]['c:Children'][0]['o:Model'][0];
-    const tables = model['c:Tables'][0]['o:Table'];
+async function getPdmInfo(parsedJson:{Model:PDB.IModel}) {
+  // fse.writeJSONSync(join(__dirname,'out.json'),parsedJson);
+  // console.log(JSON.stringify(parsedJson));
+    const model:PDB.IOModel = parsedJson.Model.oRootObject[0].cChildren[0].oModel[0];
+    const tables = model.cTables[0].oTable;
 
     const parsedModel = {};
 
     for (const table of tables) {
 
-        const ref = table['$']['Id'];
-        const name = codify(table['a:Name'][0]);
-        const code = table['a:Code'][0];
-        const constantName = codifyUpper(table['a:Name'][0]);
-        const conceptualName = table['a:Name'][0];
-        const comment = table['a:Comment'];
-        const description = await rtfToHTML(table['a:Description']);
-        const primaryKeyArray = table["c:PrimaryKey"][0]["o:Key"];
+        const ref = table.$.Id;
+        const name = codify(table.aName[0]);
+        const code = table.aCode[0];
+        const constantName = codifyUpper(table.aName[0]);
+        const conceptualName = table.aName[0];
+        const comment = table.aComment;
+        const description = await rtfToHTML(table.aDescription);
+        const primaryKeyArray = table.cPrimaryKey[0].oKey;
         const columns = await getColumns(table);
         const keys = getKeys(table, primaryKeyArray, columns);
 
@@ -58,12 +56,11 @@ async function getPdmInfo(parsedJson) {
         const table = parsedModel[tableCode];
         table.inRelations = [];
         table.outRelations = [];
-        const inReferences = model['c:References'][0]['o:Reference'].filter(r => r['c:ChildTable'][0]['o:Table'][0]['$']['Ref'] === table.ref);
-        const outReferences = model['c:References'][0]['o:Reference'].filter(r => r['c:ParentTable'][0]['o:Table'][0]['$']['Ref'] === table.ref);
+        const inReferences = model.cReferences[0].oReference.filter(r => r.cChildTable[0].oTable[0].$.Ref=== table.ref);
+        const outReferences = model.cReferences[0].oReference.filter(r => r.cParentTable[0].oTable[0].$.Ref === table.ref);
 
         mapInRelations(inReferences, parsedModel, table);
         mapOutRelations(outReferences, parsedModel, table);
-
     }
 
     return parsedModel;
@@ -107,7 +104,7 @@ function mapOutRelations(outReferences, parsedModel, table) {
     }
 }
 
-function getKeys(table, primaryKeyArray, columns) {
+function getKeys(table:PDB.OTable, primaryKeyArray, columns) {
     return table["c:Keys"][0]["o:Key"].map(key => {
         const ref = key['$']['Id'];
         const name = key['a:Name'][0];
@@ -130,7 +127,7 @@ function getColumnsKey(key, columns, isPrimaryKey) {
     });
 }
 
-async function getColumns(table) {
+async function getColumns(table:PDB.OTable) {
     return await Promise.all(table["c:Columns"][0]["o:Column"].map(async (column) => {
         return {
             ref: column['$']['Id'],
