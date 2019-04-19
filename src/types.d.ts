@@ -150,6 +150,10 @@ declare module PDB {
     "aModifier": string[];
     "aForeignKeyConstraintName": string[];
     "aCardinality": string[];
+    //@deprecated 没看过数据结构中 这个值的结构是什么
+    aParentRole:any[];
+    //@deprecated 没看过数据结构中 这个值的结构是什么
+    aChildRole:any[];
     "cParentTable": {
       "oTable":KeyRef[]
     }[];
@@ -159,7 +163,9 @@ declare module PDB {
     "cParentKey": {
       "akey":KeyRef[]
     }[];
-    "cJoins": OReferenceJoin[];
+    "cJoins": {
+      "oReferenceJoin":OReferenceJoin[]
+    }[];
   }
 
 
@@ -254,13 +260,17 @@ declare module PDB {
     "aCreationDate": string[];
     "aCreator": string[];
     "aModificationDate": string[];
+    "aDescription": string[];
     "aModifier": string[];
     "aDataType": string[];
     "aLength": string[];
     "aIdentity": string[];
+    //@deprecated
     "aColumn.Mandatory": string[];
     "aComment": string[];
     "aExtendedAttributesText": string[];
+     aDefaultValue:string[];
+     aPrecision:string[];
   }
 
   export interface CColumn {
@@ -309,3 +319,40 @@ declare module PDB {
   }
 }
 
+
+
+
+declare module PDBTrans{
+
+  interface ITableInfo{
+    ref:string;
+    name:string;
+    code:string;
+    constantName:string;
+    conceptualName:string;
+    comment:string;
+    description:string;
+    columns:IColumn[];
+    keys:string;
+
+  }
+
+
+  interface IColumn{
+
+    ref:string;
+    name:string;
+    code:string;
+    constantName:string;
+    conceptualName:string;
+    description:string;
+    dataType:string;
+    isIdentity:boolean;
+    isMandatory:boolean;
+    isPrimaryKey:boolean;
+    length:string;
+    listOfValues:any[];
+    precision:string;
+    defaultValue:string;
+  }
+}

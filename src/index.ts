@@ -66,17 +66,18 @@ async function getPdmInfo(parsedJson:{Model:PDB.IModel}) {
     return parsedModel;
 }
 
-function mapInRelations(inReferences, parsedModel, table) {
+function mapInRelations(inReferences:PDB.OReference[], parsedModel, table) {
     for (const reference of inReferences) {
-        const parentTable = findTableByRef(parsedModel, reference['c:ParentTable'][0]['o:Table'][0]['$']['Ref']);
-        const parentColumnRef = reference['c:Joins'][0]['o:ReferenceJoin'][0]['c:Object1'][0]['o:Column'][0]['$']['Ref'];
-        const childColumnRef = reference['c:Joins'][0]['o:ReferenceJoin'][0]['c:Object2'][0]['o:Column'][0]['$']['Ref'];
+
+        const parentTable = findTableByRef(parsedModel, reference.cParentTable[0].oTable[0].$.Ref);
+        const parentColumnRef = reference.cJoins[0].oReferenceJoin[0].cObject1[0].oColumn[0].$.Ref;
+        const childColumnRef = reference.cJoins[0].oReferenceJoin[0].cObject2[0].oColumn[0].$.Ref;
         table.inRelations.push({
-            name: reference['a:Name'][0],
-            code: reference['a:Code'][0],
-            cardinality: reference['a:Cardinality'][0],
-            parentRole: reference['a:ParentRole'][0],
-            childRole: reference['a:ChildRole'][0],
+            name: reference.aName[0],
+            code: reference.aCode[0],
+            cardinality: reference.aCardinality[0],
+            parentRole: reference.aParentRole[0],
+            childRole: reference.aChildRole[0],
             parentTable: parentTable.conceptualName,
             parentColumn: findColumnByRef(parentTable, parentColumnRef)['conceptualName'],
             childTable: table.conceptualName,
@@ -87,15 +88,15 @@ function mapInRelations(inReferences, parsedModel, table) {
 
 function mapOutRelations(outReferences, parsedModel, table) {
     for (const reference of outReferences) {
-        const childTable = findTableByRef(parsedModel, reference['c:ChildTable'][0]['o:Table'][0]['$']['Ref']);
-        const parentColumnRef = reference['c:Joins'][0]['o:ReferenceJoin'][0]['c:Object1'][0]['o:Column'][0]['$']['Ref'];
-        const childColumnRef = reference['c:Joins'][0]['o:ReferenceJoin'][0]['c:Object2'][0]['o:Column'][0]['$']['Ref'];
+        const childTable = findTableByRef(parsedModel, reference.cChildTable[0].oTable[0].$.Ref);
+        const parentColumnRef = reference.cJoins[0].oReferenceJoin[0].cObject1[0].oColumn[0].$.Ref;
+        const childColumnRef = reference.cJoins[0].oReferenceJoin[0].cObject2[0].oColumn[0].$.Ref;
         table.outRelations.push({
-            name: reference['a:Name'][0],
-            code: reference['a:Code'][0],
-            cardinality: reference['a:Cardinality'][0],
-            parentRole: reference['a:ParentRole'][0],
-            childRole: reference['a:ChildRole'][0],
+            name: reference.aName[0],
+            code: reference.aCode[0],
+            cardinality: reference.aCardinality[0],
+            parentRole: reference.aParentRole[0],
+            childRole: reference.aChildRole[0],
             parentTable: table.conceptualName,
             parentColumn: findColumnByRef(table, parentColumnRef)['conceptualName'],
             childTable: childTable.conceptualName,
@@ -105,19 +106,19 @@ function mapOutRelations(outReferences, parsedModel, table) {
 }
 
 function getKeys(table:PDB.OTable, primaryKeyArray, columns) {
-    return table["c:Keys"][0]["o:Key"].map(key => {
-        const ref = key['$']['Id'];
-        const name = key['a:Name'][0];
-        const code = key['a:Code'][0];
-        const isPrimaryKey = !!primaryKeyArray.find(k => k['$']['Ref'] == key['$']['Id']);
-        const columnsKey = getColumnsKey(key, columns, isPrimaryKey);
+    return table.cKeys[0].oKey.map(key => {
+        const ref = key.$.Id;
+        const name = key.aName[0];
+        const code = key.aCode[0];
+        const isPrimaryKey = !!primaryKeyArray.find(k => k.$.Ref == key.$.Id);
+        const columnsKey =  getColumnsKey(key, columns, isPrimaryKey);
         return { ref, name, code, isPrimaryKey, columnsKey };
     });
 }
 
 function getColumnsKey(key, columns, isPrimaryKey) {
-    return key['c:Key.Columns'][0]['o:Column'].map(cKey => {
-        const column = columns.find(c => c.ref === cKey['$']['Ref']);
+    return key.cKey.Columns[0].oColumn.map(cKey => {
+        const column = columns.find(c => c.ref === cKey.$.Ref);
         column.isPrimaryKey = isPrimaryKey;
         return {
             name: column.name,
@@ -127,23 +128,26 @@ function getColumnsKey(key, columns, isPrimaryKey) {
     });
 }
 
-async function getColumns(table:PDB.OTable) {
-    return await Promise.all(table["c:Columns"][0]["o:Column"].map(async (column) => {
+async function getColumns(table:PDB.OTable):Promise<PDBTrans.IColumn[]>{
+    return await Promise.all(table.cColumns[0].oColumn.map(async (column:PDB.OColumn) => {
         return {
-            ref: column['$']['Id'],
-            name: codify(column['a:Name'][0]),
-            code: column['a:Code'][0],
-            constantName: codifyUpper(column['a:Name'][0]),
-            conceptualName: column['a:Name'][0],
-            description: await rtfToHTML(column['a:Description']),
-            dataType: column['a:DataType'][0],
-            isIdentity: column['a:Identity'] ? !!Number(column['a:Identity'][0]) : false,
-            isMandatory: column['a:Column.Mandatory'] ? !!Number(column['a:Column.Mandatory'][0]) : false,
-            isPrimaryKey: false,
-            length: column['a:Length'] && column['a:Length'].length ? column['a:Length'][0] : null,
-            listOfValues: column['a:ListOfValues'] && column['a:ListOfValues'].length ? extractListOfValues(column['a:ListOfValues'][0]) : null,
-            precision: column['a:Precision'] && column['a:Precision'].length ? column['a:Precision'][0] : null,
-            defaultValue: column['a:DefaultValue'] && column['a:DefaultValue'].length ? column['a:DefaultValue'][0] : null
+            ref: column.$.Id,
+            name: codify(column.aName[0]),
+            code: column.aCode[0],
+            constantName: codifyUpper(column.aName[0]),
+            conceptualName: column.aName[0],
+            description: await rtfToHTML(column.aDescription),
+            dataType: column.aDataType[0],
+            isIdentity: column.aIdentity ? !!Number(column.aIdentity[0]) : false,
+            isMandatory: column['aColumn.Mandatory'] ? !!Number(column['aColumn.Mandatory'][0]) : false,
+            isPrimaryKey: false,//TODO 为什么这里是写死的.
+            length: column.aLength && column.aLength.length ? column.aLength[0] : null,
+          //@ts-ignore TODO
+            listOfValues: column.aListOfValues && column.aListOfValues.length ? extractListOfValues(column.aListOfValues[0]) : null,
+          //@ts-ignore TODO
+            precision: column.aPrecision && column.aPrecision.length ? column.aPrecision[0] : null,
+          //@ts-ignore TODO
+          defaultValue: column.aDefaultValue && column.aDefaultValue.length ? column.aDefaultValue[0] : null
         };
     }));
 }
